@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Consolidador WCAG — Ceguera Total — BO UNMdP v3</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#fff;--bg2:#f5f5f3;--bg3:#eeede9;--t1:#1a1a1a;--t2:#5f5e5a;--t3:#888780;
+    --bdr:rgba(0,0,0,.11);--bdr2:rgba(0,0,0,.20);
+    --a-bg:#faeeda;--a-fg:#854f0b;--aa-bg:#e6f1fb;--aa-fg:#185fa5;
+    --auto-bg:#eaf3de;--auto-fg:#3b6d11;--both-bg:#f1efe8;--both-fg:#5f5e5a;
+    --cc:#3b6d11;--cn:#a32d2d;--cp:#854f0b;--ca:#888780;
+    --r:8px;--rl:12px;--font:system-ui,-apple-system,sans-serif;--mono:'Courier New',monospace;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#1e1e1c;--bg2:#2a2a27;--bg3:#323230;--t1:#f0efe8;--t2:#999890;--t3:#666560;
+    --bdr:rgba(255,255,255,.09);--bdr2:rgba(255,255,255,.18);
+    --a-bg:#412402;--a-fg:#fac775;--aa-bg:#042c53;--aa-fg:#85b7eb;
+    --auto-bg:#173404;--auto-fg:#c0dd97;--both-bg:#2c2c2a;--both-fg:#b4b2a9;
+    --cc:#639922;--cn:#e24b4a;--cp:#ef9f27;--ca:#b4b2a9;
+  }}
+  body{font-family:var(--font);background:var(--bg);color:var(--t1);padding:2rem 1.5rem;max-width:1100px;margin:0 auto}
+  header{border-bottom:.5px solid var(--bdr2);padding-bottom:1.25rem;margin-bottom:1.5rem}
+  header h1{font-size:20px;font-weight:400;margin-bottom:4px}
+  header p{font-size:13px;color:var(--t2)}
+  .notice{background:var(--aa-bg);color:var(--aa-fg);border:.5px solid var(--aa-fg);border-radius:var(--r);padding:10px 14px;font-size:12px;margin-bottom:1.25rem}
+  .tabs{display:flex;border:.5px solid var(--bdr2);border-radius:var(--r);overflow:hidden;width:fit-content;margin-bottom:1.5rem}
+  .tab{padding:7px 20px;font-size:12px;cursor:pointer;background:var(--bg);color:var(--t2);border-right:.5px solid var(--bdr2);user-select:none}
+  .tab:last-child{border-right:none}.tab.active{background:var(--bg2);color:var(--t1);font-weight:500}
+  .panel{display:none}.panel.active{display:block}.section{margin-bottom:2rem}
+  .sec-title{font-size:14px;font-weight:500;margin-bottom:10px;padding-bottom:6px;border-bottom:.5px solid var(--bdr2)}
+  .btn{font-size:12px;padding:6px 14px;border:.5px solid var(--bdr2);border-radius:var(--r);background:var(--bg);color:var(--t1);cursor:pointer;font-family:var(--font)}
+  .btn:hover{background:var(--bg2)}.btn-p{background:var(--aa-bg);color:var(--aa-fg);border-color:var(--aa-fg)}.btn-p:hover{opacity:.85}
+  .btn-s{background:var(--auto-bg);color:var(--auto-fg);border-color:var(--auto-fg)}
+  .fzone{border:1px dashed var(--bdr2);border-radius:var(--rl);padding:2rem 1.5rem;text-align:center;color:var(--t2);font-size:13px;margin-bottom:12px;cursor:pointer}
+  .fzone:hover{background:var(--bg2)}.fzone input[type=file]{display:none}.fzone label{cursor:pointer;color:var(--aa-fg);font-weight:500}
+  .dlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .dtag{font-size:11px;padding:3px 8px;border-radius:4px;background:var(--bg2);color:var(--t2);border:.5px solid var(--bdr);display:flex;align-items:center;gap:6px}
+  .dtag button{background:none;border:none;cursor:pointer;color:var(--t2);font-size:14px;padding:0;line-height:1}.dtag button:hover{color:var(--cn)}
+  .mgrid{display:grid;grid-template-columns:74px minmax(0,1fr) 62px 110px;border:.5px solid var(--bdr2);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+  .mgh{background:var(--bg2);font-size:10px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;padding:7px 10px;border-bottom:.5px solid var(--bdr2);border-right:.5px solid var(--bdr)}
+  .mgh:last-child{border-right:none}
+  .mgs{grid-column:1/-1;background:var(--bg3);font-size:10px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;padding:4px 10px;border-bottom:.5px solid var(--bdr)}
+  .mgc{padding:6px 10px;font-size:11px;border-bottom:.5px solid var(--bdr);border-right:.5px solid var(--bdr);display:flex;align-items:center}
+  .mgc:last-child{border-right:none}
+  .mgc select{font-size:11px;padding:3px 5px;border:.5px solid var(--bdr2);border-radius:4px;background:var(--bg);color:var(--t1);width:100%;font-family:var(--font)}
+  .code{font-family:var(--mono);font-size:10px;color:var(--t2)}
+  .badge{display:inline-flex;align-items:center;justify-content:center;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;white-space:nowrap}
+  .ba{background:var(--a-bg);color:var(--a-fg)}.baa{background:var(--aa-bg);color:var(--aa-fg)}
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.5rem}
+  .scard{background:var(--bg2);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--t2)}
+  .scard span{display:block;font-size:26px;font-weight:400;color:var(--t1);margin-bottom:2px}
+  .scard.cc span{color:var(--cc)}.scard.cn span{color:var(--cn)}.scard.cp span{color:var(--cp)}.scard.ca span{color:var(--ca)}
+  .charts-row{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;margin-bottom:2rem;align-items:start}
+  @media(max-width:800px){.charts-row{grid-template-columns:1fr}}
+  .chart-box{background:var(--bg2);border-radius:var(--rl);padding:1.25rem}
+  .chart-box h3{font-size:12px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+  .chart-wrap{position:relative;width:100%}
+  .legrow{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:11px;color:var(--t2)}
+  .leg{display:flex;align-items:center;gap:5px}.legsq{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .rtable{width:100%;border-collapse:collapse;font-size:12px}
+  .rtable th{background:var(--bg2);padding:7px 10px;text-align:left;font-size:10px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;border-bottom:.5px solid var(--bdr2)}
+  .rtable td{padding:7px 10px;border-bottom:.5px solid var(--bdr)}
+  .rtable tr:last-child td{border-bottom:none}.rtable tr:hover td{background:var(--bg2)}
+  .empty{text-align:center;padding:3rem;color:var(--t2);font-size:13px;border:.5px dashed var(--bdr2);border-radius:var(--rl)}
+  .dctr{font-size:12px;color:var(--t2);margin-bottom:10px}.dctr strong{color:var(--t1)}
+  .mwrap{display:none;background:rgba(0,0,0,.48);border-radius:var(--rl);padding:2rem 1rem;min-height:300px;align-items:flex-start;justify-content:center;margin-top:1rem}
+  .mwrap.open{display:flex}
+  .modal{background:var(--bg);border:.5px solid var(--bdr2);border-radius:var(--rl);padding:1.25rem;width:100%;max-width:640px}
+  .modal h3{font-size:14px;font-weight:500;margin-bottom:10px}
+  .modal textarea{width:100%;height:230px;font-size:11px;font-family:var(--mono);padding:8px;border:.5px solid var(--bdr2);border-radius:var(--r);background:var(--bg2);color:var(--t1);resize:vertical}
+  .mfoot{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--auto-bg);color:var(--auto-fg);border:.5px solid var(--auto-fg);border-radius:var(--r);padding:8px 16px;font-size:12px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
+  .toast.show{opacity:1}
+  @media print{.tabs,.btn,.fzone,.mwrap{display:none !important}.panel{display:block !important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Consolidador de resultados WCAG — Nivel A y AA</h1>
+  <p>Criterios aplicables a <strong>personas con ceguera total</strong> · Boletín Oficial UNMdP · Tesina LGU 2025–2026</p>
+</header>
+<div class="notice">⚑ Esta herramienta incluye los <strong>13 criterios WCAG 2.1 A/AA</strong> relevantes para usuarios con ceguera total. Los criterios de contraste, color, reflow y espaciado fueron excluidos por no aplicar a este perfil de discapacidad.</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('cargar')">1. Cargar CSV</div>
+  <div class="tab" onclick="showTab('manual')">2. Ingreso manual</div>
+  <div class="tab" onclick="showTab('resultados')">3. Resultados</div>
+</div>
+
+<div id="panel-cargar" class="panel active section">
+  <div class="sec-title">Cargar archivos CSV exportados desde la Matriz WCAG</div>
+  <div class="fzone" ondragover="event.preventDefault()" ondrop="onDrop(event)">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 10px;display:block;opacity:.4"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4"/></svg>
+    <div style="margin-bottom:4px">Arrastrar archivos CSV aquí o <label for="csvInput">seleccionar archivos</label></div>
+    <div style="font-size:11px;opacity:.7">Podés cargar varios a la vez · Formato: CSV exportado desde la Matriz WCAG Ceguera v2</div>
+    <input type="file" id="csvInput" multiple accept=".csv" onchange="loadFiles(this.files)">
+  </div>
+  <div class="dlist" id="dlist"></div>
+  <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-p" onclick="showTab('resultados');renderResults()">Ver resultados →</button>
+    <button class="btn" onclick="clearAll()">Limpiar todo</button>
+  </div>
+</div>
+
+<div id="panel-manual" class="panel section">
+  <div class="sec-title">Ingreso manual de resultados por documento</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+    <input type="text" id="manId" placeholder="Ej: id_norma=92309 — 6 ene 2025"
+      style="flex:1;min-width:260px;font-size:13px;padding:6px 10px;border:.5px solid var(--bdr2);border-radius:var(--r);background:var(--bg);color:var(--t1);font-family:var(--font)">
+    <button class="btn btn-p" onclick="addManDoc()">Cargar este documento</button>
+  </div>
+  <div class="dctr" id="dctr">Documentos cargados: <strong>0</strong> / 22</div>
+  <div id="manForm"></div>
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-s" onclick="saveManDoc()">Guardar documento</button>
+    <button class="btn" onclick="showTab('resultados');renderResults()">Ver resultados →</button>
+  </div>
+</div>
+
+<div id="panel-resultados" class="panel section">
+  <div id="resArea"><div class="empty">Todavía no hay datos cargados.<br>Usá las pestañas anteriores para cargar CSVs o ingresar resultados manualmente.</div></div>
+</div>
+
+<div class="mwrap" id="mExp"><div class="modal">
+  <h3>Consolidado exportado — Ctrl+A, Ctrl+C para copiar</h3>
+  <textarea id="expOut" readonly></textarea>
+  <div class="mfoot">
+    <button class="btn" onclick="selEl('expOut')">Seleccionar todo</button>
+    <button class="btn" onclick="dlCSV()">Descargar .csv</button>
+    <button class="btn" onclick="closeM('mExp')">Cerrar</button>
+  </div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const C=[
+  {s:"Principio 1 — Perceptible"},
+  {code:"1.1.1",name:"Contenido no textual",lv:"A"},
+  {code:"1.3.1",name:"Información y relaciones",lv:"A"},
+  {code:"1.3.2",name:"Secuencia significativa",lv:"A"},
+  {code:"1.4.5",name:"Imágenes de texto",lv:"AA"},
+  {s:"Principio 2 — Operable"},
+  {code:"2.4.1",name:"Saltar bloques",lv:"A"},
+  {code:"2.4.2",name:"Título de página",lv:"A"},
+  {code:"2.4.3",name:"Orden de foco",lv:"A"},
+  {code:"2.4.4",name:"Propósito de los enlaces",lv:"A"},
+  {code:"2.4.6",name:"Encabezados y etiquetas",lv:"AA"},
+  {s:"Principio 3 — Comprensible"},
+  {code:"3.1.1",name:"Idioma de la página",lv:"A"},
+  {code:"3.1.2",name:"Idioma de las partes",lv:"AA"},
+  {s:"Principio 4 — Robusto"},
+  {code:"4.1.1",name:"Procesamiento",lv:"A"},
+  {code:"4.1.2",name:"Nombre, función, valor",lv:"A"},
+];
+const CODES=C.filter(x=>x.code).map(x=>x.code);
+const OPTS=["— sin evaluar —","Cumple","No cumple","Parcial","N/A"];
+let docs={},chartBar=null,chartPie=null,activeDoc=null,_csv="";
+
+function showTab(id){
+  ["cargar","manual","resultados"].forEach((t,i)=>{
+    document.querySelectorAll(".tab")[i].classList.toggle("active",t===id);
+    document.getElementById("panel-"+t).classList.toggle("active",t===id);
+  });
+}
+function onDrop(e){e.preventDefault();loadFiles(e.dataTransfer.files);}
+function loadFiles(files){
+  Array.from(files).forEach(f=>{
+    const r=new FileReader();r.onload=e=>{parseCSV(e.target.result,f.name);renderDList();};r.readAsText(f,"UTF-8");
+  });
+}
+function parseCSV(text,fname){
+  text.trim().split("\n").slice(1).forEach(line=>{
+    const cols=parseLine(line);if(cols.length<6)return;
+    const[doc,code,,,,result]=cols;
+    const key=doc||fname.replace(".csv","");
+    if(!docs[key])docs[key]={source:"csv",data:{}};
+    if(CODES.includes(code))docs[key].data[code]=result||"";
+  });
+}
+function parseLine(line){
+  const res=[];let cur="",inQ=false;
+  for(let i=0;i<line.length;i++){
+    if(line[i]==='"'){inQ=!inQ;}else if(line[i]===","&&!inQ){res.push(cur.trim());cur="";}else cur+=line[i];
+  }
+  res.push(cur.trim());return res;
+}
+function renderDList(){
+  const el=document.getElementById("dlist");el.innerHTML="";
+  Object.keys(docs).filter(k=>docs[k].source==="csv").forEach(doc=>{
+    const t=document.createElement("div");t.className="dtag";
+    t.innerHTML=`<span>${doc}</span><button onclick="rmDoc('${doc.replace(/'/g,"\\'")}')">×</button>`;el.appendChild(t);
+  });
+  updCtr();
+}
+function rmDoc(d){delete docs[d];renderDList();}
+function clearAll(){docs={};renderDList();document.getElementById("manForm").innerHTML="";}
+function updCtr(){document.getElementById("dctr").innerHTML=`Documentos cargados: <strong>${Object.keys(docs).length}</strong> / 22`;}
+function addManDoc(){
+  const id=document.getElementById("manId").value.trim();
+  if(!id){toast("Ingresá un identificador");return;}
+  activeDoc=id;if(!docs[id])docs[id]={source:"manual",data:{}};
+  buildManForm(id);updCtr();
+}
+function buildManForm(docId){
+  const f=document.getElementById("manForm");
+  f.innerHTML=`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">Evaluando: <strong style="color:var(--t1)">${docId}</strong></div>`;
+  const g=document.createElement("div");g.className="mgrid";
+  ["Criterio","Nombre","Niv.","Resultado"].forEach(h=>{const d=document.createElement("div");d.className="mgh";d.textContent=h;g.appendChild(d);});
+  C.forEach(c=>{
+    if(c.s){const d=document.createElement("div");d.className="mgs";d.textContent=c.s.toUpperCase();g.appendChild(d);return;}
+    const ex=docs[docId]?.data[c.code]||"";
+    const lc=c.lv==="A"?"ba":"baa";
+    [`<span class="code">${c.code}</span>`,`<span style="font-size:11px">${c.name}</span>`,`<span class="badge ${lc}">${c.lv}</span>`]
+      .forEach(h=>{const d=document.createElement("div");d.className="mgc";d.innerHTML=h;g.appendChild(d);});
+    const sd=document.createElement("div");sd.className="mgc";
+    const sel=document.createElement("select");sel.id="m-"+c.code;
+    OPTS.forEach(o=>{const op=document.createElement("option");op.textContent=o;if(o===ex)op.selected=true;sel.appendChild(op);});
+    sd.appendChild(sel);g.appendChild(sd);
+  });
+  f.appendChild(g);
+}
+function saveManDoc(){
+  if(!activeDoc){toast("Primero cargá un documento");return;}
+  CODES.forEach(code=>{const el=document.getElementById("m-"+code);if(el)docs[activeDoc].data[code]=el.value;});
+  updCtr();toast("Guardado: "+activeDoc);
+}
+function aggregate(){
+  const T={};CODES.forEach(c=>{T[c]={cumple:0,nocumple:0,parcial:0,na:0,total:0};});
+  Object.values(docs).forEach(doc=>{
+    CODES.forEach(code=>{
+      const v=doc.data[code]||"";const t=T[code];
+      if(v==="Cumple"){t.cumple++;t.total++;}
+      else if(v==="No cumple"){t.nocumple++;t.total++;}
+      else if(v==="Parcial"){t.parcial++;t.total++;}
+      else if(v==="N/A"){t.na++;t.total++;}
+    });
+  });
+  return T;
+}
+function pct(v,t){return t>0?Math.round(v/t*100):0;}
+
+function renderResults(){
+  const area=document.getElementById("resArea");
+  const n=Object.keys(docs).length;
+  if(n===0){area.innerHTML='<div class="empty">Todavía no hay datos cargados.<br>Usá las pestañas anteriores para cargar CSVs o ingresar resultados manualmente.</div>';return;}
+  const T=aggregate();
+  const gC=CODES.reduce((s,c)=>s+T[c].cumple,0);
+  const gN=CODES.reduce((s,c)=>s+T[c].nocumple,0);
+  const gP=CODES.reduce((s,c)=>s+T[c].parcial,0);
+  const gA=CODES.reduce((s,c)=>s+T[c].na,0);
+  const gT=gC+gN+gP+gA;
+  // Criterios con al menos 1 evaluación (excluye "sin evaluar")
+  const active=CODES.filter(code=>T[code].total>0);
+
+  area.innerHTML=`
+    <div class="sec-title">${n} documento${n>1?"s":""} evaluado${n>1?"s":""} · Resumen global</div>
+    <div class="sgrid">
+      <div class="scard cc"><span>${pct(gC,gT)}%</span>Cumple<br><small style="font-size:10px">${gC} evaluaciones</small></div>
+      <div class="scard cn"><span>${pct(gN,gT)}%</span>No cumple<br><small style="font-size:10px">${gN} evaluaciones</small></div>
+      <div class="scard cp"><span>${pct(gP,gT)}%</span>Parcial<br><small style="font-size:10px">${gP} evaluaciones</small></div>
+      <div class="scard ca"><span>${pct(gA,gT)}%</span>N/A<br><small style="font-size:10px">${gA} evaluaciones</small></div>
+      <div class="scard"><span>${gT}</span>Evaluaciones totales</div>
+      <div class="scard"><span>${n}</span>Documentos</div>
+      <div class="scard"><span>${active.length}</span>Criterios evaluados</div>
+    </div>
+
+    <div class="sec-title" style="margin-top:1.5rem">Visualización de resultados</div>
+    <div class="legrow">
+      <div class="leg"><div class="legsq" style="background:var(--cc)"></div>Cumple</div>
+      <div class="leg"><div class="legsq" style="background:var(--cn)"></div>No cumple</div>
+      <div class="leg"><div class="legsq" style="background:var(--cp)"></div>Parcial</div>
+      <div class="leg"><div class="legsq" style="background:var(--ca)"></div>N/A</div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-box">
+        <h3>% de documentos por resultado — por criterio</h3>
+        <div class="chart-wrap" style="height:${Math.max(320,active.length*32+80)}px">
+          <canvas id="barChart" role="img" aria-label="Barras verticales agrupadas con porcentaje de cumplimiento WCAG por criterio"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <h3>Distribución global</h3>
+        <div class="chart-wrap" style="height:240px">
+          <canvas id="pieChart" role="img" aria-label="Gráfico circular con distribución global de resultados WCAG"></canvas>
+        </div>
+        <div style="margin-top:1rem;font-size:11px;color:var(--t2)">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--bdr)"><span>✅ Cumple</span><strong style="color:var(--cc)">${gC} (${pct(gC,gT)}%)</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--bdr)"><span>❌ No cumple</span><strong style="color:var(--cn)">${gN} (${pct(gN,gT)}%)</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--bdr)"><span>⚠️ Parcial</span><strong style="color:var(--cp)">${gP} (${pct(gP,gT)}%)</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0"><span>— N/A</span><strong style="color:var(--ca)">${gA} (${pct(gA,gT)}%)</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:1rem">Tabla detallada por criterio</div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px">
+      <button class="btn" onclick="exportCons()">Exportar consolidado CSV</button>
+      <button class="btn" onclick="window.print()">Imprimir</button>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="rtable"><thead><tr>
+      <th>Criterio</th><th>Nombre</th><th>Niv.</th>
+      <th style="text-align:center">Cumple</th><th style="text-align:center">No cumple</th>
+      <th style="text-align:center">Parcial</th><th style="text-align:center">N/A</th>
+      <th style="text-align:center">Evaluados</th>
+    </tr></thead><tbody id="rtbody"></tbody></table></div>`;
+
+  // Tabla — todos los 13 criterios, sin evaluar aparece explícito
+  const tb=document.getElementById("rtbody");
+  CODES.forEach(code=>{
+    const c=C.find(x=>x.code===code);const t=T[code];
+    const lc=c.lv==="A"?"ba":"baa";
+    const sinEval=Object.keys(docs).length>0&&t.total===0;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td><span class="code">${code}</span></td><td>${c.name}</td>
+      <td><span class="badge ${lc}">${c.lv}</span></td>
+      <td style="text-align:center;color:var(--cc);font-weight:500">${sinEval?"—":t.cumple+" "}<span style="font-size:10px;color:var(--t2);font-weight:400">${sinEval?"":("("+pct(t.cumple,t.total)+"%)")}</span></td>
+      <td style="text-align:center;color:var(--cn);font-weight:500">${sinEval?"—":t.nocumple+" "}<span style="font-size:10px;color:var(--t2);font-weight:400">${sinEval?"":("("+pct(t.nocumple,t.total)+"%)")}</span></td>
+      <td style="text-align:center;color:var(--cp);font-weight:500">${sinEval?"—":t.parcial+" "}<span style="font-size:10px;color:var(--t2);font-weight:400">${sinEval?"":("("+pct(t.parcial,t.total)+"%)")}</span></td>
+      <td style="text-align:center;color:var(--t2)">${sinEval?"—":t.na}</td>
+      <td style="text-align:center;color:var(--t2)">${sinEval?"<span style='font-size:10px;color:var(--cp)'>pendiente manual</span>":t.total}</td>`;
+    tb.appendChild(tr);
+  });
+
+  const dark=matchMedia("(prefers-color-scheme:dark)").matches;
+  const COL={cc:dark?"#639922":"#3b6d11",cn:dark?"#e24b4a":"#a32d2d",cp:dark?"#ef9f27":"#854f0b",ca:dark?"#b4b2a9":"#888780"};
+
+  if(chartBar)chartBar.destroy();
+  chartBar=new Chart(document.getElementById("barChart"),{
+    type:"bar",
+    data:{
+      labels:active,
+      datasets:[
+        {label:"Cumple (%)",   data:active.map(c=>pct(T[c].cumple,  T[c].total)),backgroundColor:COL.cc,borderRadius:3},
+        {label:"No cumple (%)",data:active.map(c=>pct(T[c].nocumple,T[c].total)),backgroundColor:COL.cn,borderRadius:3},
+        {label:"Parcial (%)",  data:active.map(c=>pct(T[c].parcial, T[c].total)),backgroundColor:COL.cp,borderRadius:3},
+        {label:"N/A (%)",      data:active.map(c=>pct(T[c].na,      T[c].total)),backgroundColor:COL.ca,borderRadius:3},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,position:"top",labels:{font:{size:11},color:dark?"#f0efe8":"#1a1a1a",boxWidth:12,padding:14}},
+        tooltip:{callbacks:{
+          title:ctx=>{const c=C.find(x=>x.code===ctx[0].label);return c?`${c.code} — ${c.name}`:"";},
+          label:ctx=>`${ctx.dataset.label}: ${ctx.raw}%`
+        }}
+      },
+      scales:{
+        x:{ticks:{color:dark?"#999890":"#5f5e5a",font:{size:10,family:"Courier New, monospace"}},grid:{color:"rgba(128,128,128,0.08)"}},
+        y:{min:0,max:100,ticks:{color:dark?"#999890":"#5f5e5a",font:{size:11},callback:v=>v+"%"},grid:{color:"rgba(128,128,128,0.08)"}}
+      }
+    }
+  });
+
+  if(chartPie)chartPie.destroy();
+  const pl=[],pd=[],pc=[];
+  if(gC>0){pl.push("Cumple");   pd.push(gC);pc.push(COL.cc);}
+  if(gN>0){pl.push("No cumple");pd.push(gN);pc.push(COL.cn);}
+  if(gP>0){pl.push("Parcial");  pd.push(gP);pc.push(COL.cp);}
+  if(gA>0){pl.push("N/A");      pd.push(gA);pc.push(COL.ca);}
+  chartPie=new Chart(document.getElementById("pieChart"),{
+    type:"doughnut",
+    data:{labels:pl,datasets:[{data:pd,backgroundColor:pc,borderWidth:2,borderColor:dark?"#1e1e1c":"#fff",hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"55%",
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${pct(ctx.raw,gT)}%)`}}}}
+  });
+}
+
+function exportCons(){
+  const T=aggregate();
+  let csv="Criterio,Nombre,Nivel,Cumple,NoCumple,Parcial,NA,Total evaluado,% Cumple,% NoCumple,% Parcial,% NA\n";
+  CODES.forEach(code=>{
+    const c=C.find(x=>x.code===code);const t=T[code];const tot=t.total||0;
+    csv+=`"${code}","${c.name}","${c.lv}",${t.cumple},${t.nocumple},${t.parcial},${t.na},${tot},${pct(t.cumple,tot)}%,${pct(t.nocumple,tot)}%,${pct(t.parcial,tot)}%,${pct(t.na,tot)}%\n`;
+  });
+  _csv=csv;document.getElementById("expOut").value=csv;document.getElementById("mExp").classList.add("open");
+}
+function dlCSV(){
+  const blob=new Blob(["\uFEFF"+_csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;a.download="consolidado_wcag_ceguera_v3_bo_unmdp.csv";a.click();URL.revokeObjectURL(url);
+}
+function closeM(id){document.getElementById(id).classList.remove("open");}
+function selEl(id){const t=document.getElementById(id);t.select();t.setSelectionRange(0,99999);}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2500);}
+</script>
+</body>
+</html>

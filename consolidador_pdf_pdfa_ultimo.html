@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Consolidador PDF/A-1a — WCAG — BO UNMdP</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#fff;--bg2:#f5f5f3;--bg3:#eeede9;--t1:#1a1a1a;--t2:#5f5e5a;--t3:#888780;
+    --bdr:rgba(0,0,0,.11);--bdr2:rgba(0,0,0,.20);
+    --aa-bg:#e6f1fb;--aa-fg:#185fa5;--auto-bg:#eaf3de;--auto-fg:#3b6d11;
+    --cc:#3b6d11;--cn:#a32d2d;--cp:#854f0b;--ca:#888780;
+    --r:8px;--rl:12px;--font:system-ui,-apple-system,sans-serif;--mono:'Courier New',monospace;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#1e1e1c;--bg2:#2a2a27;--bg3:#323230;--t1:#f0efe8;--t2:#999890;--t3:#666560;
+    --bdr:rgba(255,255,255,.09);--bdr2:rgba(255,255,255,.18);
+    --aa-bg:#042c53;--aa-fg:#85b7eb;--auto-bg:#173404;--auto-fg:#c0dd97;
+    --cc:#639922;--cn:#e24b4a;--cp:#ef9f27;--ca:#b4b2a9;
+  }}
+  body{font-family:var(--font);background:var(--bg);color:var(--t1);padding:2rem 1.5rem;max-width:1300px;margin:0 auto}
+  header{border-bottom:.5px solid var(--bdr2);padding-bottom:1.25rem;margin-bottom:1.5rem}
+  header h1{font-size:20px;font-weight:400;margin-bottom:4px}
+  header p{font-size:13px;color:var(--t2)}
+  .notice{background:var(--aa-bg);color:var(--aa-fg);border:.5px solid var(--aa-fg);border-radius:var(--r);padding:10px 14px;font-size:12px;margin-bottom:1.25rem}
+  .fzone{border:1px dashed var(--bdr2);border-radius:var(--rl);padding:2rem 1.5rem;text-align:center;color:var(--t2);font-size:13px;margin-bottom:12px;cursor:pointer}
+  .fzone:hover{background:var(--bg2)}.fzone input[type=file]{display:none}.fzone label{cursor:pointer;color:var(--aa-fg);font-weight:500}
+  .btn{font-size:12px;padding:6px 14px;border:.5px solid var(--bdr2);border-radius:var(--r);background:var(--bg);color:var(--t1);cursor:pointer;font-family:var(--font)}
+  .btn:hover{background:var(--bg2)}
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+  .scard{background:var(--bg2);border-radius:var(--r);padding:10px 14px;font-size:11px;color:var(--t2)}
+  .scard span{display:block;font-size:26px;font-weight:400;color:var(--t1);margin-bottom:2px}
+  .scard.cc span{color:var(--cc)}.scard.cn span{color:var(--cn)}.scard.cp span{color:var(--cp)}.scard.ca span{color:var(--ca)}
+  .sec-title{font-size:14px;font-weight:500;margin-bottom:10px;padding-bottom:6px;border-bottom:.5px solid var(--bdr2);margin-top:1.5rem}
+  .legrow{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:11px;color:var(--t2)}
+  .leg{display:flex;align-items:center;gap:5px}.legsq{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .charts-row{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;margin-bottom:2rem;align-items:start}
+  @media(max-width:800px){.charts-row{grid-template-columns:1fr}}
+  .chart-box{background:var(--bg2);border-radius:var(--rl);padding:1.25rem}
+  .chart-box h3{font-size:12px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+  .chart-wrap{position:relative;width:100%}
+  .rtable{width:100%;border-collapse:collapse;font-size:11px}
+  .rtable th{background:var(--bg2);padding:7px 10px;text-align:left;font-size:10px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;border-bottom:.5px solid var(--bdr2);white-space:nowrap}
+  .rtable th.wcag{text-align:center;min-width:54px}
+  .rtable td{padding:7px 10px;border-bottom:.5px solid var(--bdr);vertical-align:middle}
+  .rtable tr:last-child td{border-bottom:none}.rtable tr:hover td{background:var(--bg2)}
+  .badge{display:inline-flex;align-items:center;justify-content:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500;white-space:nowrap}
+  .b-ok{background:#eaf3de;color:#3b6d11}.b-no{background:#fcebeb;color:#a32d2d}
+  .b-par{background:#faeeda;color:#854f0b}.b-na{background:var(--bg3);color:var(--t2)}
+  .ic-ok{color:var(--cc);font-size:13px}.ic-no{color:var(--cn);font-size:13px}.ic-na{color:var(--t3);font-size:12px}
+  .code{font-family:var(--mono);font-size:10px;color:var(--t2)}
+  .empty{text-align:center;padding:3rem;color:var(--t2);font-size:13px;border:.5px dashed var(--bdr2);border-radius:var(--rl)}
+  .wcag-legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .wcag-pill{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--bg3);color:var(--t2);font-family:var(--mono)}
+  .mwrap{display:none;background:rgba(0,0,0,.48);border-radius:var(--rl);padding:2rem 1rem;min-height:260px;align-items:flex-start;justify-content:center;margin-top:1rem}
+  .mwrap.open{display:flex}
+  .modal{background:var(--bg);border:.5px solid var(--bdr2);border-radius:var(--rl);padding:1.25rem;width:100%;max-width:640px}
+  .modal h3{font-size:14px;font-weight:500;margin-bottom:10px}
+  .modal textarea{width:100%;height:200px;font-size:11px;font-family:var(--mono);padding:8px;border:.5px solid var(--bdr2);border-radius:var(--r);background:var(--bg2);color:var(--t1);resize:vertical}
+  .mfoot{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--auto-bg);color:var(--auto-fg);border:.5px solid var(--auto-fg);border-radius:var(--r);padding:8px 16px;font-size:12px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
+  .toast.show{opacity:1}
+  @media print{.btn,.fzone,.mwrap{display:none !important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Consolidador PDF/A-1a — Criterios WCAG — Boletín Oficial UNMdP</h1>
+  <p>Evaluación de accesibilidad en documentos PDF · Perfil PDF/A-1a (ISO 19005-1) mapeado a WCAG 2.1 via Protocolo Matterhorn · Tesina LGU 2025–2026</p>
+</header>
+<div class="notice">⚑ Importar el archivo <strong>resultados_pdf_wcag.csv</strong> generado por el script Python. Una fila por documento, una columna por criterio WCAG.</div>
+
+<div class="fzone" ondragover="event.preventDefault()" ondrop="onDrop(event)">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 10px;display:block;opacity:.4"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4"/></svg>
+  <div style="margin-bottom:4px">Arrastrar el CSV aquí o <label for="csvInput">seleccionarlo</label></div>
+  <div style="font-size:11px;opacity:.7">Archivo: resultados_pdf_wcag.csv</div>
+  <input type="file" id="csvInput" accept=".csv" onchange="loadFile(this.files[0])">
+</div>
+
+<div id="main" style="display:none">
+
+  <!-- Tarjetas resumen -->
+  <div class="sgrid" id="scards"></div>
+
+  <!-- Gráficos -->
+  <div class="sec-title" style="margin-top:.5rem">Visualización de resultados</div>
+  <div class="legrow">
+    <div class="leg"><div class="legsq" style="background:var(--cc)"></div>Cumple</div>
+    <div class="leg"><div class="legsq" style="background:var(--cn)"></div>No cumple</div>
+    <div class="leg"><div class="legsq" style="background:var(--cp)"></div>Parcial</div>
+    <div class="leg"><div class="legsq" style="background:var(--ca)"></div>N/A</div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <h3>Cumplimiento por criterio WCAG — % de documentos que cumplen</h3>
+      <div class="chart-wrap" style="height:360px">
+        <canvas id="barChart" role="img" aria-label="Barras con porcentaje de documentos que cumplen cada criterio WCAG"></canvas>
+      </div>
+    </div>
+    <div class="chart-box">
+      <h3>Conformidad global de documentos</h3>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="pieChart" role="img" aria-label="Gráfico circular de conformidad global"></canvas>
+      </div>
+      <div id="pieDetail" style="margin-top:1rem;font-size:11px;color:var(--t2)"></div>
+    </div>
+  </div>
+
+  <!-- Tabla por criterio WCAG -->
+  <div class="sec-title">Resumen por criterio WCAG</div>
+  <div style="overflow-x:auto;margin-bottom:2rem">
+    <table class="rtable" id="criterioTable">
+      <thead><tr>
+        <th>Criterio</th><th>Nombre</th><th>Nivel</th>
+        <th style="text-align:center">Cumplen</th>
+        <th style="text-align:center">No cumplen</th>
+        <th style="text-align:center">% Cumple</th>
+      </tr></thead>
+      <tbody id="criterioBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Tabla por documento -->
+  <div class="sec-title">Detalle por documento</div>
+  <div class="wcag-legend" id="wcagLegend"></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px">
+    <button class="btn" onclick="exportCSV()">Exportar resumen CSV</button>
+    <button class="btn" onclick="window.print()">Imprimir</button>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="rtable" id="docTable">
+      <thead id="docHead"></thead>
+      <tbody id="docBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="empty" id="emptyState">Cargá el archivo <strong>resultados_pdf_wcag.csv</strong> para ver los resultados.</div>
+
+<div class="mwrap" id="mExp"><div class="modal">
+  <h3>Resumen CSV — Ctrl+A, Ctrl+C para copiar</h3>
+  <textarea id="expOut" readonly></textarea>
+  <div class="mfoot">
+    <button class="btn" onclick="selEl('expOut')">Seleccionar todo</button>
+    <button class="btn" onclick="dlCSV()">Descargar .csv</button>
+    <button class="btn" onclick="closeM('mExp')">Cerrar</button>
+  </div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// Criterios WCAG esperados en el CSV (columnas WCAG_x_x_x)
+const WCAG_DEFS = [
+  {code:"1.1.1", nombre:"Contenido no textual",      nivel:"A",  col:"WCAG_1_1_1"},
+  {code:"1.3.1", nombre:"Información y relaciones",  nivel:"A",  col:"WCAG_1_3_1"},
+  {code:"1.3.2", nombre:"Secuencia significativa",   nivel:"A",  col:"WCAG_1_3_2"},
+  {code:"1.4.5", nombre:"Imágenes de texto",         nivel:"AA", col:"WCAG_1_4_5"},
+  {code:"2.4.1", nombre:"Saltar bloques",            nivel:"A",  col:"WCAG_2_4_1"},
+  {code:"2.4.2", nombre:"Título de página",          nivel:"A",  col:"WCAG_2_4_2"},
+  {code:"2.4.3", nombre:"Orden de foco",             nivel:"A",  col:"WCAG_2_4_3"},
+  {code:"2.4.4", nombre:"Propósito de los enlaces",  nivel:"A",  col:"WCAG_2_4_4"},
+  {code:"2.4.6", nombre:"Encabezados y etiquetas",   nivel:"AA", col:"WCAG_2_4_6"},
+  {code:"3.1.1", nombre:"Idioma de la página",       nivel:"A",  col:"WCAG_3_1_1"},
+  {code:"3.1.2", nombre:"Idioma de las partes",      nivel:"AA", col:"WCAG_3_1_2"},
+  {code:"4.1.1", nombre:"Nombre, función, valor",    nivel:"A",  col:"WCAG_4_1_1"},
+];
+
+let rows=[], chartBar=null, chartPie=null, _csv='';
+
+function onDrop(e){e.preventDefault();if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);}
+function loadFile(f){const r=new FileReader();r.onload=e=>{parseCSV(e.target.result);render();};r.readAsText(f,'UTF-8');}
+
+let HEADERS=[];
+function parseCSV(text){
+  rows=[];
+  const lines=text.trim().split('\n');
+  HEADERS=parseLine(lines[0]).map(h=>h.trim());
+  for(let i=1;i<lines.length;i++){
+    if(!lines[i].trim()) continue;
+    const cols=parseLine(lines[i]);
+    const row={};
+    HEADERS.forEach((h,j)=>{row[h]=cols[j]||'';});
+    rows.push(row);
+  }
+}
+function parseLine(line){
+  const res=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    if(line[i]==='"'){inQ=!inQ;}
+    else if(line[i]===','&&!inQ){res.push(cur.trim());cur='';}
+    else cur+=line[i];
+  }
+  res.push(cur.trim());return res;
+}
+
+function get(row,key){return(row[key]||'').trim();}
+function getNum(row,key){const v=parseInt(get(row,key));return isNaN(v)?0:v;}
+function pct(v,t){return t>0?Math.round(v/t*100):0;}
+
+function estadoBadge(est){
+  const m={'Cumple':'b-ok','No cumple':'b-no','Parcial':'b-par'};
+  return `<span class="badge ${m[est]||'b-na'}">${est||'N/A'}</span>`;
+}
+
+function wcagIcon(val){
+  if(val==='Cumple')    return '<span class="ic-ok">✓</span>';
+  if(val==='No cumple') return '<span class="ic-no">✗</span>';
+  return '<span class="ic-na">—</span>';
+}
+
+function render(){
+  if(!rows.length) return;
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('main').style.display='block';
+
+  const n=rows.length;
+  const cumple   =rows.filter(r=>get(r,'Estado_Global')==='Cumple').length;
+  const nocumple =rows.filter(r=>get(r,'Estado_Global')==='No cumple').length;
+  const parcial  =rows.filter(r=>get(r,'Estado_Global')==='Parcial').length;
+  const na       =n-cumple-nocumple-parcial;
+  const totalFR  =rows.reduce((s,r)=>s+getNum(r,'PDFA_Reglas_Fallidas'),0);
+  const totalCH  =rows.reduce((s,r)=>s+getNum(r,'PDFA_Checks_Fallidos'),0);
+
+  // Tarjetas
+  document.getElementById('scards').innerHTML=`
+    <div class="scard cc"><span>${pct(cumple,n)}%</span>Cumple todos<br><small>${cumple} docs</small></div>
+    <div class="scard cp"><span>${pct(parcial,n)}%</span>Cumple parcial<br><small>${parcial} docs</small></div>
+    <div class="scard cn"><span>${pct(nocumple,n)}%</span>No cumple<br><small>${nocumple} docs</small></div>
+    <div class="scard ca"><span>${pct(na,n)}%</span>N/A/Error<br><small>${na} docs</small></div>
+    <div class="scard"><span>${n}</span>Documentos evaluados</div>
+    <div class="scard cn"><span>${totalFR}</span>Total reglas PDF/A fallidas</div>
+    <div class="scard"><span>${totalCH}</span>Total checks fallidos</div>`;
+
+  // Tabla por criterio WCAG
+  const critBody=document.getElementById('criterioBody');critBody.innerHTML='';
+  WCAG_DEFS.forEach(def=>{
+    const c_total=rows.filter(r=>get(r,def.col)!=='').length;
+    const c_cumple=rows.filter(r=>get(r,def.col)==='Cumple').length;
+    const c_no=rows.filter(r=>get(r,def.col)==='No cumple').length;
+    const lc=def.nivel==='A'?'b-par':'b-na';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><span class="code">${def.code}</span></td>
+      <td>${def.nombre}</td>
+      <td><span class="badge ${lc}">${def.nivel}</span></td>
+      <td style="text-align:center;color:var(--cc);font-weight:500">${c_cumple} <span style="font-size:10px;color:var(--t2);font-weight:400">(${pct(c_cumple,c_total)}%)</span></td>
+      <td style="text-align:center;color:var(--cn);font-weight:500">${c_no} <span style="font-size:10px;color:var(--t2);font-weight:400">(${pct(c_no,c_total)}%)</span></td>
+      <td style="text-align:center">
+        <div style="display:flex;height:8px;border-radius:2px;overflow:hidden;background:var(--bg3);min-width:80px">
+          <div style="width:${pct(c_cumple,c_total)}%;background:var(--cc)"></div>
+          <div style="width:${pct(c_no,c_total)}%;background:var(--cn)"></div>
+        </div>
+      </td>`;
+    critBody.appendChild(tr);
+  });
+
+  // Tabla por documento — encabezado dinámico
+  const dhead=document.getElementById('docHead'); dhead.innerHTML='';
+  const hrow=document.createElement('tr');
+  ['Documento','Estado','PDFA<br>Conforme','Reglas<br>Fallidas','Checks<br>Fallidos'].forEach(t=>{
+    const th=document.createElement('th');th.innerHTML=t;hrow.appendChild(th);
+  });
+  WCAG_DEFS.forEach(def=>{
+    const th=document.createElement('th');
+    th.className='wcag';th.innerHTML=def.code;
+    th.title=def.nombre;hrow.appendChild(th);
+  });
+  dhead.appendChild(hrow);
+
+  const dbody=document.getElementById('docBody');dbody.innerHTML='';
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    let cells=`
+      <td><span class="code">${get(r,'Documento')}</span></td>
+      <td>${estadoBadge(get(r,'Estado_Global'))}</td>
+      <td style="text-align:center">${get(r,'PDFA_Conforme')==='Sí'?'<span class="ic-ok">✓</span>':'<span class="ic-no">✗</span>'}</td>
+      <td style="text-align:center;color:${getNum(r,'PDFA_Reglas_Fallidas')>0?'var(--cn)':'var(--t2)'};font-weight:500">${get(r,'PDFA_Reglas_Fallidas')||'—'}</td>
+      <td style="text-align:center;color:var(--t2)">${get(r,'PDFA_Checks_Fallidos')||'—'}</td>`;
+    WCAG_DEFS.forEach(def=>{
+      cells+=`<td style="text-align:center">${wcagIcon(get(r,def.col))}</td>`;
+    });
+    tr.innerHTML=cells;
+    dbody.appendChild(tr);
+  });
+
+  // Leyenda WCAG pills
+  const legend=document.getElementById('wcagLegend');legend.innerHTML='';
+  WCAG_DEFS.forEach(def=>{
+    const span=document.createElement('span');
+    span.className='wcag-pill';
+    span.title=def.nombre;
+    span.textContent=`${def.code} = ${def.nombre}`;
+    legend.appendChild(span);
+  });
+
+  const dark=matchMedia('(prefers-color-scheme:dark)').matches;
+  const COL={cc:dark?'#639922':'#3b6d11',cn:dark?'#e24b4a':'#a32d2d',cp:dark?'#ef9f27':'#854f0b',ca:dark?'#b4b2a9':'#888780'};
+
+  // Gráfico de barras — % cumplimiento por criterio
+  if(chartBar)chartBar.destroy();
+  const barLabels=WCAG_DEFS.map(d=>d.code);
+  const barCumple=WCAG_DEFS.map(d=>{
+    const tot=rows.filter(r=>get(r,d.col)!=='').length;
+    const c=rows.filter(r=>get(r,d.col)==='Cumple').length;
+    return pct(c,tot);
+  });
+  const barNo=WCAG_DEFS.map(d=>{
+    const tot=rows.filter(r=>get(r,d.col)!=='').length;
+    const c=rows.filter(r=>get(r,d.col)==='No cumple').length;
+    return pct(c,tot);
+  });
+  chartBar=new Chart(document.getElementById('barChart'),{
+    type:'bar',
+    data:{
+      labels:barLabels,
+      datasets:[
+        {label:'Cumple (%)',   data:barCumple, backgroundColor:COL.cc, borderRadius:3},
+        {label:'No cumple (%)',data:barNo,     backgroundColor:COL.cn, borderRadius:3},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{size:11},color:dark?'#f0efe8':'#1a1a1a',boxWidth:12,padding:14}},
+        tooltip:{callbacks:{
+          title:ctx=>{const d=WCAG_DEFS.find(x=>x.code===ctx[0].label);return d?`${d.code} — ${d.nombre}`:'';},
+          label:ctx=>`${ctx.dataset.label}: ${ctx.raw}%`
+        }}
+      },
+      scales:{
+        x:{ticks:{color:dark?'#999890':'#5f5e5a',font:{size:10,family:'Courier New,monospace'}},grid:{color:'rgba(128,128,128,0.08)'}},
+        y:{min:0,max:100,ticks:{color:dark?'#999890':'#5f5e5a',font:{size:11},callback:v=>v+'%'},grid:{color:'rgba(128,128,128,0.08)'}}
+      }
+    }
+  });
+
+  // Gráfico donut — estado global de documentos
+  if(chartPie)chartPie.destroy();
+  const pl=[],pd=[],pc=[];
+  if(cumple)  {pl.push('Cumple');         pd.push(cumple);   pc.push(COL.cc);}
+  if(parcial) {pl.push('Cumple parcial'); pd.push(parcial);  pc.push(COL.cp);}
+  if(nocumple){pl.push('No cumple');      pd.push(nocumple); pc.push(COL.cn);}
+  if(na)      {pl.push('N/A');            pd.push(na);       pc.push(COL.ca);}
+  chartPie=new Chart(document.getElementById('pieChart'),{
+    type:'doughnut',
+    data:{labels:pl,datasets:[{data:pd,backgroundColor:pc,borderWidth:2,borderColor:dark?'#1e1e1c':'#fff',hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${pct(ctx.raw,n)}%)`}}}}
+  });
+  document.getElementById('pieDetail').innerHTML=`
+    <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--bdr)"><span>✅ Cumple todos</span><strong style="color:var(--cc)">${cumple} (${pct(cumple,n)}%)</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--bdr)"><span>⚠️ Cumple parcial</span><strong style="color:var(--cp)">${parcial} (${pct(parcial,n)}%)</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--bdr)"><span>❌ No cumple</span><strong style="color:var(--cn)">${nocumple} (${pct(nocumple,n)}%)</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:3px 0"><span>— N/A</span><strong style="color:var(--ca)">${na} (${pct(na,n)}%)</strong></div>`;
+}
+
+function exportCSV(){
+  let csv='Documento,Estado_Global,PDFA_Conforme,PDFA_Reglas_Fallidas,PDFA_Checks_Fallidos';
+  WCAG_DEFS.forEach(d=>{csv+=`,WCAG_${d.code.replace(/\./g,'_')}_${d.nombre}`;});
+  csv+='\n';
+  rows.forEach(r=>{
+    csv+=`"${get(r,'Documento')}","${get(r,'Estado_Global')}","${get(r,'PDFA_Conforme')}",${getNum(r,'PDFA_Reglas_Fallidas')},${getNum(r,'PDFA_Checks_Fallidos')}`;
+    WCAG_DEFS.forEach(d=>{csv+=`,"${get(r,d.col)}"`;});
+    csv+='\n';
+  });
+  _csv=csv;
+  document.getElementById('expOut').value=csv;
+  document.getElementById('mExp').classList.add('open');
+}
+function dlCSV(){
+  const blob=new Blob(['\uFEFF'+_csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='resumen_pdf_wcag_bo_unmdp.csv';a.click();URL.revokeObjectURL(url);
+}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function selEl(id){const t=document.getElementById(id);t.select();t.setSelectionRange(0,99999);}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
