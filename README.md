@@ -340,5 +340,5 @@ El script descarga los documentos, ejecuta la validación mediante veraPDF, proc
 ---
 
 # Autoría
-Técnicos Marcelo Alejandro Algamiz y Edgardo Damián Emiliano
+Técnicos Marcelo Alejandro Algamiz y Edgardo Damián Emiliano. 
 Repositorio desarrollado como parte de la tesina de grado de la **Licenciatura en Gestión Universitaria**, Facultad de Ciencias Económicas y Sociales, Universidad Nacional de Mar del Plata.
