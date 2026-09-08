@@ -270,7 +270,7 @@ CRITERIOS_WCAG = [
         ),
     },
     {
-        "wcag":               "4.1.1",
+        "wcag":               "4.1.2",
         "nivel":              "A",
         "nombre_wcag":        "Nombre, función, valor",
         "matterhorn":         "05-001",
